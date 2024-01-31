@@ -15,19 +15,6 @@ import threading
 import time
 from playsound import playsound
 
-
-#####################################
-#             ENUMERATE             # 
-#####################################
-
-PICES = {
-    1:[["⬛","⬛"],["⬛","⬛"]],
-    2:[["⬛","⬛","⬛"],["⬛","NaN","NaN"]],
-    3:[["⬛","⬛","⬛"],["NaN","NaN","⬛"]],
-    4:[["⬛","⬛","⬛"],["NaN","⬛","NaN"]],
-    5:[["⬛","⬛","⬛"]]
-}
-
 #####################################
 #             OBJECTS             # 
 #####################################
@@ -39,8 +26,7 @@ class Piece():
         self.row = row
         self.col = col
         self.weight= len(self.piece[0])
-        self.height= len(self.piece)
-        
+        self.height= len(self.piece) 
 
 #####################################
 #              THREADS              # 
@@ -90,6 +76,18 @@ x = threading.Thread(target=start_counter)
 music = threading.Thread(target=start_music)
 
 #####################################
+#             ENUMERATE             # 
+#####################################
+
+PICES = {
+    1:[[cuadrado_negro,cuadrado_negro],[cuadrado_negro,cuadrado_negro]],
+    2:[[cuadrado_negro,cuadrado_negro,cuadrado_negro],[cuadrado_negro,"NaN","NaN"]],
+    3:[[cuadrado_negro,cuadrado_negro,cuadrado_negro],["NaN","NaN",cuadrado_negro]],
+    4:[[cuadrado_negro,cuadrado_negro,cuadrado_negro],["NaN",cuadrado_negro,"NaN"]],
+    5:[[cuadrado_negro,cuadrado_negro,cuadrado_negro]]
+}
+
+#####################################
 #             FUNCTIONS             # 
 #####################################
 
@@ -99,7 +97,7 @@ def create_board(weight: int, height: int)->list:
 
 def print_screen()-> None:
 
-    #os.system(str(clear))
+    os.system(str(clear))
 
     print("\nTETRIS\n")
 
@@ -156,8 +154,10 @@ def check_movement(row,col)->bool:
 
     colision = not corner
 
+    if not colision: return False
+
     for i,block in enumerate(piece.piece[-1]):
-        if block=="⬛" and screen_old[row][col+i]=="⬛":
+        if block==cuadrado_negro and screen_old[row][col+i]==cuadrado_negro:
             colision = colision and False
 
     return colision
@@ -197,7 +197,7 @@ def update_board()->None:
 
     for lista in screen_old[:3]:
         for item in lista:
-            if item=="⬛": 
+            if item==cuadrado_negro: 
                 print("END GAME")
                 end = False
                 exit()
@@ -220,7 +220,7 @@ def check_score():
         check = True
 
         for block in lista:
-            check = check and block=="⬛"
+            check = check and block==cuadrado_negro
 
         if check: delete.append(i)
 
@@ -256,7 +256,7 @@ def rotate_piece():
 
     for list in list_pieces:
         for i in range(len(list)):
-            if list[i]=="⬛" and screen_old[pieceaux.row-rowaux][pieceaux.col+i]=="⬛": return None
+            if list[i]==cuadrado_negro and screen_old[pieceaux.row-rowaux][pieceaux.col+i]==cuadrado_negro: return None
         rowaux+=1    
 
     piece = Piece(pieceaux.piece,pieceaux.row,pieceaux.col)
